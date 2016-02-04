@@ -2,4 +2,7 @@
 
 (use-package yasnippet
   :ensure t
-  :pin    "melpa-stable")
+  :pin    "melpa-stable"
+  :config
+  (yas-reload-all)
+  (add-hook 'prog-mode-hook #'yas-minor-mode))
