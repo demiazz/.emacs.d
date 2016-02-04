@@ -90,7 +90,7 @@
 
 (defun demiazz//require-layers ()
   (dolist (layer demiazz//layers)
-    (load (expand-file-name layer demiazz//layers-path))))
+    (load (expand-file-name (symbol-name layer) demiazz//layers-path))))
 
 (defun demiazz//load-layers ()
   (demiazz//require-layers))
@@ -99,7 +99,7 @@
 
 (defmacro demiazz/use-layers (&rest layers)
   `(dolist (layer ',layers)
-     (add-to-list 'demiazz//layers (symbol-name layer))))
+     (add-to-list 'demiazz//layers layer)))
 
 (defun demiazz/layer-used-p (layer)
   (-contains? demiazz//layers layer))
