@@ -20,6 +20,8 @@
                           line-number     t
                           column-number   t
 
+                          cursor-type     'bar
+
                           linum-format    " %d ")
 
 ;;----- Initialization
@@ -47,6 +49,11 @@
     (if (member family (font-family-list))
         (set-face-attribute 'default nil :font family))
     (set-face-attribute 'default nil :height (* size 10))))
+
+;; Cursor
+
+(when window-system
+  (setq-default cursor-type l-ui//cursor-type))
 
 ;; Splash screen
 
