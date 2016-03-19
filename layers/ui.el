@@ -44,6 +44,7 @@
 ;; Font
 
 (when window-system
+  (mac-auto-operator-composition-mode)
   (let ((family l-ui//font-family)
         (size   l-ui//font-size))
     (if (member family (font-family-list))
