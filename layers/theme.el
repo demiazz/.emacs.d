@@ -24,26 +24,27 @@
       (dolist (theme themes)
         (package-install theme)))))
 
-(defun demiazz//theme//check-light-theme ()
+(defun demiazz//theme//validate-light-theme ()
   (if l-theme//light t
     (progn
-      (message "Error: light theme isn't set.") nil)))
+      (demiazz//log//fatal "layer/theme" "light theme isn't set.") nil)))
 
-(defun demiazz//theme//check-dark-theme ()
+(defun demiazz//theme//validate-dark-theme ()
   (if l-theme//dark t
     (progn
-      (message "Error: dark theme isn't set.") nil)))
+      (demiazz//log//fatal "layer/theme" "dark theme isn't set.") nil)))
 
-(defun demiazz//theme//check-default-theme ()
-  (if (or (equalp l-theme//default 'light)
-          (equalp l-theme//default 'dark)) t
+(defun demiazz//theme//validate-default-theme ()
+  (if (or (= l-theme//default 'light)
+          (= l-theme//default 'dark)) t
     (progn
-      (message "Error: default theme must be `light` or `dark`") nil)))
+      (deimazz//log//fatal "layer/theme"
+                           "default theme must be `light` or `dark`"))))
 
-(defun demiazz//theme//check-themes ()
-  (or (demiazz//theme//check-light-theme)
-      (demiazz//theme//check-dark-theme)
-      (demiazz//theme//check-default-theme)))
+(defun demiazz//theme//is-valid ()
+  (or (demiazz//theme//validate-light-theme)
+      (demiazz//theme//validate-dark-theme)
+      (demiazz//theme//validate-default-theme)))
 
 (defun demiazz//theme//use-light-theme ()
   (setq-default demiazz//theme//current-theme 'light)
@@ -75,17 +76,23 @@
   (interactive)
   (demiazz//theme//use-dark-theme))
 
-;;----- Initialization
+;;----- Bootstrap
 
-(setq-default custom-safe-themes t)
-(demiazz//theme//install-themes)
-
-(if (demiazz//theme//check-themes)
-    (demiazz//theme//use-default-theme))
+(defun demiazz//theme//bootstrap ()
+  (setq-default custom-safe-themes t)
+  (demiazz//theme//install-themes)
+  (demiazz//theme//use-default-theme))
 
 ;;----- Keybindings
 
-(bind-keys*
+(defun demiazz//theme//keybindings ()
+  (bind-keys*
  ("C-c t t" . demiazz/theme/toggle-theme)
  ("C-c t l" . demiazz/theme/light-theme)
- ("C-c t d" . demiazz/theme/dark-theme))
+ ("C-c t d" . demiazz/theme/dark-theme)))
+
+;;----- Initialization
+
+(when (demiazz//theme//is-valid)
+  (demiazz//theme//bootstrap)
+  (demiazz//theme//keybindings))
