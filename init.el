@@ -150,10 +150,63 @@
 (defmacro demiazz/settings (layer &rest settings)
   `(demiazz//process-settings ',layer ',settings nil))
 
+;;----- Logger
+
+(setq-default demiazz//log-buffer (get-buffer-create "*Log*"))
+
+(setq-default demiazz//debug-log-level 0)
+(setq-default demiazz//info-log-level 1)
+(setq-default demiazz//warning-log-level 2)
+(setq-default demiazz//error-log-level 3)
+(setq-default demiazz//fatal-log-level 4)
+
+(setq-default demiazz//show-log-on demiazz//warning-log-level)
+(setq-default demiazz//max-log-level demiazz//debug-log-level)
+
+(defun demiazz//log (level subsystem message)
+  (let ((message-format "%s :: %s :: %s\n")
+        (formatted-log-level (demiazz//format-log-level level))
+        (formatted-subsystem (upcase subsystem)))
+    (with-current-buffer demiazz//log-buffer
+      (when (> level demiazz//max-log-level)
+        (setq-default demiazz//max-log-level level))
+      (insert
+       (format message-format
+               formatted-log-level
+               formatted-subsystem
+               message)))))
+
+(defun demiazz//format-log-level (level)
+  (cond ((= level demiazz//debug-log-level) "DEBUG")
+        ((= level demiazz//info-log-level) "INFO")
+        ((= level demiazz//warning-log-level) "WARNING")
+        ((= level demiazz//error-log-level) "ERROR")
+        ((= level demiazz//fatal-log-level) "FATAL")))
+
+(defun demiazz//show-log-on-startup ()
+  (when (>= demiazz//max-log-level demiazz//show-log-on)
+    (switch-to-buffer demiazz//log-buffer)))
+
+(defun demiazz/log/debug (subsystem message)
+  (demiazz//log demiazz//debug-log-level subsystem message))
+
+(defun demiazz/log/info (subsystem message)
+  (demiazz//log demiazz//info-log-level subsystem message))
+
+(defun demiazz/log/warning (subsystem message)
+  (demiazz//log demiazz//warning-log-level subsystem message))
+
+(defun demiazz/log/error (subsystem message)
+  (demiazz//log demiazz//error-log-level subsystem message))
+
+(defun demiazz/log/fatal (subsystem message)
+  (demiazz//log demiazz//fatal-log-level subsystem message))
+
 ;;----- Bootstrap
 
 (demiazz//load-config)
 (demiazz//load-layers)
+(demiazz//show-log-on-startup)
 
 ;;----- Server
 
