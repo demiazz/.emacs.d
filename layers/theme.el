@@ -87,9 +87,9 @@
 
 (defun demiazz//theme//keybindings ()
   (bind-keys*
- ("C-c t t" . demiazz/theme/toggle-theme)
- ("C-c t l" . demiazz/theme/light-theme)
- ("C-c t d" . demiazz/theme/dark-theme)))
+   ("C-c t t" . demiazz/theme/toggle-theme)
+   ("C-c t l" . demiazz/theme/light-theme)
+   ("C-c t d" . demiazz/theme/dark-theme)))
 
 ;;----- Initialization
 
